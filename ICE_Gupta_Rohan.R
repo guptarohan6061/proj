@@ -18,6 +18,7 @@ summary(reg)
 
 
 #Comparing means
+#Subjective Test
 trend = time_a - time_b$seasonal
 mean(trend)
 var(trend)
@@ -26,7 +27,7 @@ mean(na.omit(random_a))
 var(na.omit(random_a))
 
 
-
+#Objective Test
 #Augmented Dickey-Fuller -test
 adf.test(trend, k = 20, alternative = "stationary")
 #The p-value of the ADF test is significant
@@ -51,13 +52,19 @@ pacf(difference1)
 
 
 mod_a = arima(difference1, order = c(1, 0, 1), method = "ML")
+mod_a
 mod_b = arima(difference1, order = c(2, 0, 0), method = "ML")
+mod_b
 mod_c = arima(difference1, order = c(2, 0, 1), method = "ML")
+mod_c
 
-#Estimation of Components
+#Estimation of Components & Diagnostic Checking
 coeftest(mod_a)
+AIC(mod_a, k = log(length(difference1)))
 coeftest(mod_b)
+AIC(mod_b, k = log(length(difference1)))
 coeftest(mod_c)
+AIC(mod_c, k = log(length(difference1)))
 
 #Diagnostic Checking
 mod_b_a = AIC(mod_a, k = log(length(difference1)))
@@ -69,12 +76,15 @@ mod_f_a = forecast(mod_a, h = 20)
 mod_f_b = forecast(mod_b, h = 20)
 mod_f_c = forecast(mod_c, h = 20)
 
-#plot
+#plot & accuracy
+accuracy(mod_f_a)
 plot(mod_f_a)
+accuracy(mod_f_b)
 plot(mod_f_b)
+accuracy(mod_f_c)
 plot(mod_f_c)
 
-#accuracy
-accuracy(mod_f_a)
-accuracy(mod_f_b)
-accuracy(mod_f_c)
+
+
+
+
